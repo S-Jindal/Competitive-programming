@@ -1,0 +1,101 @@
+
+// problem link :   http://codeforces.com/contest/344/problem/E
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define DO long double
+#define pb push_back
+#define pfr push_front
+#define eb emplace_back
+#define ef emplace_front
+#define gc getchar_unlocked
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<ll,ll>
+#define mp make_pair
+#define vi vector<int>
+#define vll vector<ll>
+#define fr(i,j,k) for(i = j; i < k; i++)
+#define bck(i,j,k) for(i = j; i > k; i--)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#define error(args...) { vector<string> _v = split(#args, ','); err(_v.begin(), args); cerr << '\n'; }
+vector<string> split(const string& s, char c) {
+	vector<string> v;
+	stringstream ss(s);
+	string x;
+	while (getline(ss, x, c))
+		v.emplace_back(x);
+	return move(v);
+}
+void err(vector<string>::iterator it) { }
+template<typename T, typename... Args>
+void err(vector<string>::iterator it, T a, Args... args) {
+	cerr << it -> substr((*it)[0] == ' ', it -> length()) << " = " << a << '\t';
+	err(++it, args...);
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+const int NN = (int)3e5+10;
+ll h[NN], p[NN];
+
+bool check(ll t, int m, int n){
+    int i=0, j=0;
+    for(i=0; i<n && j < m; i++){
+         if(p[j] >= h[i]){
+            for(; j < m && p[j]-h[i]<=t; j++);
+         }
+         else{
+            if(h[i] - p[j] > t)
+                break;
+            int sav1 = j, sav2 = j;
+            ll k = t - 2*(h[i] - p[j]);
+            for(; sav1<m && p[sav1]<=h[i]; sav1++);
+            sav2 = sav1;
+            for(; sav1<m && p[sav1]-h[i] <= k; sav1++);
+
+            k = t - (h[i] - p[j]);
+            for(; sav2 < m && 2*(p[sav2] - h[i]) <= k; sav2++);
+            j = max(sav2, sav1);
+         }
+    }
+
+    return !(j < m);
+}
+
+int main(){
+    ios::sync_with_stdio(false); cin.tie(0);
+
+    int n, i, j, k, m;
+    cin >> n >> m;
+    fr(i, 0, n){
+    cin >> h[i];
+    }
+    fr(i, 0, m){
+    cin >> p[i];
+    }
+
+
+    k = 0;
+    ll lo = 0, ub = 1e14, mid;
+    while(lo <= ub && k++ < 100){
+        mid = (lo + ub)/2;
+        if(check(mid, m, n))
+            ub = mid;
+        else
+            lo = mid+1;
+        if(ub-lo == 1){
+            if(check(lo, m, n))
+                mid = lo;
+            else
+                mid = ub;
+            break;
+        }
+    }
+
+    cout << mid;
+    return 0;
+}
