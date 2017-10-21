@@ -1,0 +1,110 @@
+// SPOJ : http://www.spoj.com/problems/POSTERS/
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define DO long double
+#define pb push_back
+#define pfr push_front
+#define eb emplace_back
+#define ef emplace_front
+#define gc getchar
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<ll,ll>
+#define mp make_pair
+#define vi vector<int>
+#define vll vector<ll>
+#define fr(i,j,k) for(i = j; i < k; i++)
+#define bck(i,j,k) for(i = j; i > k; i--)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#define error(args...) { vector<string> _v = split(#args, ','); err(_v.begin(), args); cerr << '\n'; }
+vector<string> split(const string& s, char c) {
+	vector<string> v;
+	stringstream ss(s);
+	string x;
+	while (getline(ss, x, c))
+		v.emplace_back(x);
+	return move(v);
+}
+void err(vector<string>::iterator it) { }
+template<typename T, typename... Args>
+void err(vector<string>::iterator it, T a, Args... args) {
+	cerr << it -> substr((*it)[0] == ' ', it -> length()) << " = " << a << '\t';
+	err(++it, args...);
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+inline int in()  {
+    int NR=0,sign=1;    char c=gc();
+    while( c < 48 || c > 57 ){if(c=='-')sign=0; c=gc();}
+    while(c>47 && c< 58)
+    {    NR = (NR << 3) + (NR << 1) + (c - 48);    c=gc();    }
+    return (sign?NR:(-NR));
+}
+
+pii ne[4]={mp(0,1), mp(1,0), mp(-1,0), mp(0,-1)};
+
+const int mod = (int)1e9+7;
+/////////////////////////////////////////////////////////////////////////////////////////
+
+const int NMAX = (int)1e7+5;
+int Arr[NMAX],  pos[NMAX];
+
+
+int root (int i)
+{
+    while(Arr[ i ] != i)
+    {
+        Arr[ i ] = Arr[ Arr[ i ] ] ;
+        i = Arr[ i ];
+    }
+    return i;
+}
+
+
+
+int main(){
+
+    int n, i, j,x, A, k, t, m = (int)1e6+2;
+    t = in();
+    while(t--){
+        n = in();
+        int l[n], r[n];
+        x = 0;
+        fr(i, 0, n){
+            scanf("%d %d", &l[i],  &r[i]);
+            x = max(x, r[i]);
+        }
+        for(i = 0; i <= x+1; i++){
+            Arr[i] = i;
+            pos[i] = -1;
+        }
+
+        bck(i, n-1, -1){
+        //	cout<<l[i] << " " << r[i];
+            for(j = l[i]; j <= r[i]; j ++){
+                j = root(j);
+                if(j <= r[i] && pos[j] == -1){
+                     pos[j] = i;
+                     Arr[j] = r[i] + 1;
+                }
+            }
+
+        }
+        set<int> st;
+        for(j = 1; j <= x; j++){
+        	if(pos[j] != -1) st.insert(pos[j]);
+//	cout << pos[j] << " ";
+        }
+        printf("%d\n", st.size());
+
+    }
+
+    return 0;
+}
+
