@@ -1,0 +1,84 @@
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define ll long long
+#define pb push_back
+#define gc getchar_unlocked
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define mp make_pair
+#define vi vector<int>
+
+inline int in()
+   {int NR=0,sign=1;    char c=gc();
+    while( c < 48 || c > 57 ){if(c=='-')sign=0; c=gc();}
+    while(c>47 && c< 58)
+    {    NR = (NR << 3) + (NR << 1) + (c - 48);    c=gc();    }
+    return (sign?NR:(-NR));
+}
+
+
+const int m=(int)1e6;
+int b[m], BIT[m];
+
+void update(int x, int n, int u)
+{
+      for(; x <= n; x += x&-x)
+        b[x] += u;
+}
+
+int query(int x)
+{
+     int sum = 0;
+     for(; x > 0; x -= x&-x)
+        sum += b[x];
+     return sum;
+}
+
+int main(){
+	int n,q,i,j,k,l,r,,h;
+	n=in();
+	int aorig[n+1];
+	for(i=1; i<=n; i++)
+		aorig[i]=in();
+	int last[m+3];
+	pii a[n+1];
+	for(i=0;i<=m+1; i++)
+		last[i]=0;
+	for(i=1; i<=n; i++){
+		a[i] = mp(last[aorig[i]],i);
+		last[aorig[i]] = i;
+	}
+	q=in();
+	pii qsort[q];
+	pii qorig[q];
+	for(i=0;i<q;i++){
+		l=in();
+		r=in();
+		qorig[i] = mp(l,r);
+		qsort[i] = mp(l,i);
+	}
+	sort(qsort,qsort+q);
+	sort(a+1,a+n+1);
+
+	int ptr=1,j;
+    int ans[200010];
+	for(int num=0; num<q; num++)
+	{
+        while(ptr<=n && a[ptr].first < qsort[num].first){
+			j=a[ptr].second;
+			update(j,n,1);
+			ptr++;
+		}
+		h = query(qorig[qsort[num].se].se) - query(qsort[num].fi-1);
+		ans[qsort[num].se] = h;
+	}
+	for(i=0;i<n;i++){
+		printf("%d\n",ans[i]);
+	}
+
+	return 0;
+}
