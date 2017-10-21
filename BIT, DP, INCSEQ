@@ -1,0 +1,91 @@
+// SPOJ : INCREASING SUBSEQUENCES
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define DO long double
+#define pb push_back
+#define pfr push_front
+#define eb emplace_back
+#define ef emplace_front
+#define gc getchar
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<ll,ll>
+#define mp make_pair
+#define vi vector<int>
+#define vll vector<ll>
+#define fr(i,j,k) for(i = j; i < k; i++)
+#define bck(i,j,k) for(i = j; i > k; i--)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#define error(args...) { vector<string> _v = split(#args, ','); err(_v.begin(), args); cerr << '\n'; }
+vector<string> split(const string& s, char c) {
+	vector<string> v;
+	stringstream ss(s);
+	string x;
+	while (getline(ss, x, c))
+		v.emplace_back(x);
+	return move(v);
+}
+void err(vector<string>::iterator it) { }
+template<typename T, typename... Args>
+void err(vector<string>::iterator it, T a, Args... args) {
+	cerr << it -> substr((*it)[0] == ' ', it -> length()) << " = " << a << '\t';
+	err(++it, args...);
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+inline int in()  {
+    int NR=0,sign=1;    char c=gc();
+    while( c < 48 || c > 57 ){if(c=='-')sign=0; c=gc();}
+    while(c>47 && c< 58)
+    {    NR = (NR << 3) + (NR << 1) + (c - 48);    c=gc();    }
+    return (sign?NR:(-NR));
+}
+
+pii ne[4]={mp(0,1), mp(1,0), mp(-1,0), mp(0,-1)};
+
+const int mod = (int)1e9+7;
+/////////////////////////////////////////////////////////////////////////////////////////
+
+const int NN = (int)1e5+1;
+ll bit[NN][51];
+
+void update(int s, int c, ll delta)
+{
+    for(int x = s; x < NN; x += (x & (-x))){
+        bit[x][c] += delta;
+    }
+}
+
+ll query(int s, int c){
+    ll ret = 0;
+    for(int x = s; x > 0; x -= (x & (-x)))
+    {
+        ret += bit[x][c];
+    }
+    return ret;
+}
+
+int main(){
+    int n, i, j, k, p, q, s;
+    ll a, b, c;
+    cin >> n >> k;
+    for(i = 0; i < n; i++){
+        cin >> s;
+        s++;        // INPUT S[i]
+        for(j = 1; j < k; j++){
+            a = query(s-1, j);
+            update(s, j+1, a);
+        }
+        update(s, 1, 1);
+    }
+
+    b = query(NN-1, k);
+    cout << b;
+    return 0;
+}
+
