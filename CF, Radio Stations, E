@@ -1,0 +1,200 @@
+
+// http://codeforces.com/contest/762/problem/E
+
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long int
+#define DO long double
+#define pb push_back
+#define pfr push_front
+#define eb emplace_back
+#define ef emplace_front
+#define gc getchar_unlocked
+#define fi first
+#define se second
+#define pii pair<int,int>
+#define pll pair<ll,ll>
+#define mp make_pair
+#define vi vector<int>
+#define vll vector<ll>
+#define fr(i,j,k) for(i = j; i < k; i++)
+#define bck(i,j,k) for(i = j; i > k; i--)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#define error(args...) { vector<string> _v = split(#args, ','); err(_v.begin(), args); cerr << '\n'; }
+vector<string> split(const string& s, char c) {
+	vector<string> v;
+	stringstream ss(s);
+	string x;
+	while (getline(ss, x, c))
+		v.emplace_back(x);
+	return move(v);
+}
+void err(vector<string>::iterator it) { }
+template<typename T, typename... Args>
+void err(vector<string>::iterator it, T a, Args... args) {
+	cerr << it -> substr((*it)[0] == ' ', it -> length()) << " = " << a << '\t';
+	err(++it, args...);
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+const int NM = 1e5 + 10;
+pair<int, pii> radio[NM];
+
+int xx[NM];
+
+vi freq[NM],  AR[NM];
+
+int sea_(int lo, int hi, int key)
+{
+    int cnt = 21, m;
+    while(lo <= hi && cnt--){
+        m = (lo + hi)/2;
+        if(xx[m] >= key)
+            hi = m;
+        else{
+            if(xx[m + 1] >= key)
+                return m + 1;
+            lo = m + 1;
+        }
+    }
+    return lo;
+}
+
+
+int _sea(int lo, int hi, int key){
+    if(xx[lo] > key)
+            return lo - 1;
+    if(xx[hi] <= key)
+        return hi;
+    
+    int cnt = 21, m;
+    while(lo <= hi && cnt--){
+        m = (lo + hi)/2;
+        if(xx[m] <= key)
+            lo = m;
+        else{
+            if(xx[m - 1] <= key)
+                return m - 1;
+            hi = m - 1;
+        }
+    }
+    return lo;
+}
+
+struct query{
+    int st, en, key;
+};
+
+vector<query> Q[NM];        // query in form of L..R and k
+
+bool comp(query A, query B)
+{
+    return A.key < B.key;
+}
+
+void update(int b[], int x, int n)
+{
+      for(; x <= n; x += x&-x)
+        b[x] += 1;
+}
+
+int query(int b[], int x)
+{
+     int sum = 0;
+     for(; x > 0; x -= x&-x)
+        sum += b[x];
+     return sum;
+}
+
+ll process(int b){
+    
+    sort(Q[b].begin(),  Q[b].end(),  comp);
+    int i, j, n = freq[b].size();
+    int bit[n+1];
+    fill(bit, bit+n+1, 0);
+    pii a[n];
+    fr(i, 0, n)
+        a[i] = {AR[b][i], i};
+    sort(a, a + n);
+    
+    j = 0;
+    ll res = 0;
+    for(auto q : Q[b])
+    {
+        if(q.st == -1)
+            continue;
+        int K = q.key;
+        while(j < n && a[j].first <= K){
+			int ind = a[j].second;
+			update(bit, ind+1, n);
+			j++;
+		}
+        res += (query(bit, q.en + 1) - query(bit, q.st));
+    }
+    return res;
+    
+}
+
+
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+
+    int n,i,j,k,u,v,t,p,q;
+
+    cin >> n >> k;
+    fr(i, 0, n){
+        int x, r, f;
+        cin >> x >> r >> f;
+        radio[i] = {x, {r, f}};
+    }
+
+    sort(radio, radio + n);
+    fr(i, 0, n){
+        xx[i] = radio[i].fi;
+       // error(i, xx[i]);
+    }
+
+    fr(i, 0, n){
+        p = radio[i].se.se;
+        freq[p].pb(i);
+        q = radio[i].fi - radio[i].se.fi;
+        q = sea_(0, n-1, q);
+        AR[p].pb(q);
+    }
+
+    fr(i, 0, n-1){
+
+        v = radio[i].fi + radio[i].se.fi;
+        t = _sea(i + 1, n - 1, v);
+        p = max(radio[i].se.se - k, 1);
+        q = min(radio[i].se.se + k, (int)1e4);
+        if(t == i) continue;
+
+        fr(j, p, q+1){
+            if(freq[j].size() == 0)
+                continue;
+            
+       //     find indices of start and end with i + 1, t respectively in freq[j] vector
+            auto low = upper_bound(freq[j].begin(), freq[j].end(), i);
+            if(low != freq[j].end()){
+                auto up = upper_bound(freq[j].begin(), freq[j].end(), t);
+                up--;
+                Q[j].pb({(int)(low - freq[j].begin()), (int)(up - freq[j].begin()), i});
+            }
+        }
+    }
+
+    ll ans = 0;
+    int m = 1e4;
+    for(i = 1; i <= m; i++)
+    {
+        if(Q[i].size() == 0)
+            continue;
+        ans += process(i);
+        
+    }
+
+    cout << ans;
+    return 0;
+}
