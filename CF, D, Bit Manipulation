@@ -1,0 +1,10 @@
+PROBLEM LINK  :  http://codeforces.com/contest/745/problem/D
+
+INTERACTIVE PROBLEM, IDEA IS BASED ON BITMASKS AND BIT MANIPULATION. 
+EACH SEGMENT OF THE ARRAY CAN BE BROKED DOWN IN POWERS OF 2.
+
+
+
+AC CODE :  http://codeforces.com/contest/745/submission/32010242
+
+SOLUTION IDEA : http://codeforces.com/blog/entry/49126
