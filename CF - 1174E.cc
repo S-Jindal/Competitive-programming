@@ -1,3 +1,6 @@
+//    This problem can also be solved without DP using only combinatorics. 
+//    This is DP based solution
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -21,11 +24,7 @@ typedef vector<bool> vb;
 typedef vector<vi> vvi;
 typedef vector<pii> vpi;
 // ---------------------------  TEMPLATE ENDS  -------------------------------------
-
-const pii dxy[] = { {-1, 0}, {1, 0}, {0, 1}, {0, -1} };
 const int mod = 1e9+7;
-// const int inf = 2e18;
-const ld eps = 1e-9;
 const int NN = 1e6 + 2;
 
 int dp2[NN][20][2];
